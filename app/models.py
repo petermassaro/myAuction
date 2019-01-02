@@ -26,6 +26,7 @@ class User(UserMixin, db.Model):
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash = db.Column(db.String(32))
+    auctions_hosted  = db.relationship('Auction', backref='creator', lazy='dynamic')
 
 
     @property
@@ -127,6 +128,18 @@ class User(UserMixin, db.Model):
         return '<User %r>' % self.username
 
 
+class Auction(db.Model):
+    __tablename__ = 'auction'
+    id = db.Column(db.Integer, primary_key=True)
+    auction_type = db.Column(db.Integer)
+    auction_duration_hours = db.Column(db.Float)
+    auction_creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    item = db.Column(db.Text)
+    item_description = db.Column(db.Text)
+    minimum_bid = db.Column(db.Float)
+    create_time = db.Column(db.DateTime(), default=datetime.utcnow)
+    start_time = db.Column(db.DateTime())
+    
 #login_manager.anonymous_user = AnonymousUser
 
 
